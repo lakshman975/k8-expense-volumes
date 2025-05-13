@@ -54,7 +54,7 @@ data:
             location /api/ {
         	    proxy_pass http://backend:8080/;
     	      }
-            
+
             error_page 500 502 503 504 /50x.html;
                 location = /50x.html {
             }
@@ -96,15 +96,15 @@ spec:
       containers:
       - name: nginx
         image: lakshman798/frontend:1.2.0
-        # resources:
-        #   # soft limit
-        #   requests:
-        #     memory: "68Mi"
-        #     cpu: "100m"
-        #   # hard limit
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "150m"
+        resources:
+          # soft limit
+          requests:
+            memory: "68Mi"
+            cpu: "100m"
+          # hard limit
+          limits:
+            memory: "128Mi"
+            cpu: "150m"
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -129,23 +129,23 @@ spec:
   - protocol: TCP
     port: 80 # service port
     targetPort: 8080
-# ---
-# apiVersion: autoscaling/v2
-# kind: HorizontalPodAutoscaler
-# metadata:
-#   name: frontend
-#   namespace: expense
-# spec:
-#   scaleTargetRef:
-#     apiVersion: apps/v1
-#     kind: Deployment
-#     name: frontend
-#   minReplicas: 1
-#   maxReplicas: 10
-#   metrics:
-#   - type: Resource
-#     resource:
-#       name: cpu
-#       target:
-#         type: Utilization
-#         averageUtilization: 5
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend
+  namespace: expense
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 5
